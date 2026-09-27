@@ -116,66 +116,66 @@ function ScheduleBuilder({
 
   return (
     <Card className="relative bg-white shadow-sm border-slate-200">
-      <CardHeader className="px-6 pt-6 pb-5 border-b bg-slate-50/50">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <CardHeader className="px-5 pt-5 pb-4 border-b bg-slate-50/50">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div>
-            <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><Clock className="w-6 h-6 text-blue-600" /> Grade Semanal</CardTitle>
-            <CardDescription className="mt-2 text-sm">Configure a sua rotina ou gerencie os seus presets</CardDescription>
+            <CardTitle className="flex items-center gap-2 text-lg font-bold"><Clock className="w-5 h-5 text-blue-600" /> Grade Semanal</CardTitle>
+            <CardDescription className="mt-1 text-xs">Configure a sua rotina ou gerencie os seus presets</CardDescription>
           </div>
           
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="default" onClick={() => setIsLoadModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-blue-700 bg-white border-blue-200 hover:bg-blue-50 shadow-2xs rounded-xl">
-              <Bookmark className="w-4 h-4" /> Carregar Preset
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsLoadModalOpen(true)} className="h-9 px-3 text-xs gap-1.5 bg-white text-blue-700 border-blue-200 hover:bg-blue-50 font-semibold rounded-xl">
+              <Bookmark className="w-3.5 h-3.5" /> Carregar
             </Button>
-            <Button size="default" onClick={() => setIsSaveModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-2xs rounded-xl">
-              <Save className="w-4 h-4" /> Salvar Preset
+            <Button size="sm" onClick={() => setIsSaveModalOpen(true)} className="h-9 px-3 text-xs gap-1.5 bg-blue-600 text-white hover:bg-blue-700 font-semibold rounded-xl">
+              <Save className="w-3.5 h-3.5" /> Salvar
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-6 space-y-5">
-        <div className="space-y-4">
+      <CardContent className="p-4 space-y-4 sm:p-6">
+        <div className="space-y-3">
           {dayKeys.map((day) => {
             const blocks = schedule[day] || [];
             const dailyMinutes = blocks.reduce((acc, block) => acc + getMinutesBetween(block.start, block.end), 0);
             return (
-              <div key={day} className="flex flex-col justify-between gap-4 p-5 transition-colors border border-slate-200 rounded-2xl bg-slate-50/40 hover:border-slate-300 sm:flex-row sm:items-start">
+              <div key={day} className="flex flex-col gap-3 p-4 transition-colors border border-slate-200 rounded-2xl bg-slate-50/40 hover:border-slate-300">
                 
-                <div className="flex items-center gap-3.5 pt-2 shrink-0">
-                  <Label className="text-base font-bold w-36 text-slate-900">{dayNames[day]}</Label>
-                  <span className="px-3 py-1 text-sm font-semibold bg-white border rounded-lg text-slate-700 border-slate-200 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-900">{dayNames[day]}</span>
+                  <span className="text-xs font-semibold text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs">
                     {dailyMinutes > 0 ? formatMinutesToDisplay(dailyMinutes) : 'Livre'}
                   </span>
                 </div>
 
-                <div className="flex flex-col items-start flex-1 gap-3 sm:max-w-md">
+                <div className="flex flex-col gap-2">
                   {blocks.map((block) => (
-                    <div key={block.id} className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs w-full sm:w-auto">
+                    <div key={block.id} className="flex items-center w-full gap-2 px-3 py-2 bg-white border rounded-xl border-slate-200 shadow-2xs">
                       <Input 
                         type="text" 
                         maxLength={5}
                         placeholder="06:00"
                         value={block.start} 
                         onChange={(e) => onBlockChange(day, block.id, 'start', e.target.value)} 
-                        className="w-32 px-2 text-base font-bold text-center bg-slate-50/80 h-11 border-slate-200 focus-visible:ring-blue-500"
+                        className="flex-1 h-10 px-1 text-sm font-bold text-center bg-slate-50/85 border-slate-200 focus-visible:ring-blue-500"
                       />
-                      <span className="text-sm font-semibold text-slate-400">às</span>
+                      <span className="text-xs font-semibold text-slate-400 shrink-0">às</span>
                       <Input 
                         type="text" 
                         maxLength={5}
                         placeholder="07:00"
                         value={block.end} 
                         onChange={(e) => onBlockChange(day, block.id, 'end', e.target.value)} 
-                        className="w-32 px-2 text-base font-bold text-center bg-slate-50/80 h-11 border-slate-200 focus-visible:ring-blue-500"
+                        className="flex-1 h-10 px-1 text-sm font-bold text-center bg-slate-50/85 border-slate-200 focus-visible:ring-blue-500"
                       />
-                      <Button variant="ghost" size="icon" onClick={() => onRemoveBlock(day, block.id)} className="w-10 h-10 ml-2 text-slate-400 hover:text-red-500 hover:bg-red-50 shrink-0"><Trash2 className="w-5 h-5" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => onRemoveBlock(day, block.id)} className="w-9 h-9 text-slate-400 hover:text-red-500 hover:bg-red-50 shrink-0"><Trash2 className="w-4 h-4" /></Button>
                     </div>
                   ))}
 
-                  {blocks.length === 0 && <span className="text-sm italic text-slate-400">Nenhum horário definido.</span>}
+                  {blocks.length === 0 && <span className="text-xs italic text-slate-400">Nenhum horário definido.</span>}
 
-                  <Button variant="outline" size="default" onClick={() => onAddBlock(day)} className="h-10 px-4 mt-1 text-sm font-semibold bg-white text-slate-700 hover:text-blue-600 hover:border-blue-200 shadow-2xs rounded-xl">
-                    <Plus className="w-4 h-4 mr-1.5 text-blue-600" /> Adicionar horário
+                  <Button variant="outline" size="sm" onClick={() => onAddBlock(day)} className="h-9 px-3 text-xs bg-white text-slate-700 hover:text-blue-600 hover:border-blue-200 font-semibold mt-0.5 rounded-xl w-full">
+                    <Plus className="w-3.5 h-3.5 mr-1 text-blue-600" /> Adicionar horário
                   </Button>
                 </div>
 
@@ -183,9 +183,9 @@ function ScheduleBuilder({
             );
           })}
         </div>
-        <div className="flex items-center justify-between pt-6 mt-4 border-t-2 border-slate-100">
-          <span className="text-base font-bold text-slate-700">Total na semana</span>
-          <span className="px-4 py-1.5 text-xl font-extrabold text-blue-700 rounded-xl bg-blue-50">{formatMinutesToDisplay(totalWeeklyMinutes)}</span>
+        <div className="flex items-center justify-between pt-4 mt-2 border-t-2 border-slate-100">
+          <span className="text-sm font-bold text-slate-700">Total na semana</span>
+          <span className="px-3 py-1 text-base font-extrabold text-blue-700 rounded-xl bg-blue-50">{formatMinutesToDisplay(totalWeeklyMinutes)}</span>
         </div>
       </CardContent>
 
