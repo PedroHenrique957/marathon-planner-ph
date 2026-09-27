@@ -565,18 +565,15 @@ export default function App() {
           const line = lines[i].trim();
           if (!line) continue;
 
-          // Deteta separador (ponto e vírgula ou vírgula)
           const delimiter = line.includes(";") ? ";" : ",";
           const cols = line.split(delimiter).map(c => c.replace(/^["']|["']$/g, "").trim());
           if (cols.length < 2) continue;
 
-          // Ignorar cabeçalho caso exista
           const firstCol = cols[0].toLowerCase();
           if (firstCol.includes("serie") || firstCol.includes("titulo") || firstCol.includes("title") || firstCol.includes("ordem")) {
             continue;
           }
 
-          // Verificar se o episódio foi assistido (procura por true/verdadeiro/sim/1 na última coluna ou em qualquer campo)
           let isWatched = false;
           const lastVal = cols[cols.length - 1]?.toLowerCase();
           if (lastVal === "true" || lastVal === "verdadeiro" || lastVal === "sim" || lastVal === "1" || lastVal === "yes") {
@@ -591,10 +588,8 @@ export default function App() {
             }
           }
 
-          // Se já foi assistido, ignora
           if (isWatched) continue;
 
-          // Estrutura TMDB Script: [0] Title, [1] Season, [2] Episode, [3] Duration, [4] Date, [5] Watched
           let title = cols[0] || "Episódio";
           let season = Number(cols[1]);
           let episodeNum = Number(cols[2]);
@@ -778,57 +773,63 @@ export default function App() {
       </div>
 
       {step === 1 && (
-        <div className="max-w-xl px-4 mx-auto space-y-5 duration-300 animate-in fade-in">
-          <div className="flex flex-col items-center justify-center pt-0 space-y-2 text-center">
-            <div className="p-2.5 mb-1 bg-blue-100 rounded-full shadow-inner w-16 h-16 flex items-center justify-center">
+        <div className="max-w-xl px-4 mx-auto space-y-6 duration-300 animate-in fade-in">
+          <div className="flex flex-col items-center justify-center pt-0 space-y-3 text-center">
+            <div className="flex items-center justify-center w-16 h-16 p-3 mb-1 bg-blue-100 rounded-full shadow-inner">
               <img 
                 src="/logo-maratona.png" 
                 alt="Logo Maratona" 
                 className="object-contain w-10 h-10" 
               />
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">Maratona de Filmes e Séries</h1>
-            <p className="max-w-md text-base text-slate-500">Olá, como prefere adicionar os conteúdos que deseja assistir?</p>
+            <h1 className="text-3xl font-black tracking-tight sm:text-4xl text-slate-900">Maratona de Filmes e Séries</h1>
+            <p className="max-w-md text-lg sm:text-xl text-slate-600">Olá, como prefere adicionar os conteúdos que deseja assistir?</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3">
-            <div onClick={() => setInputMethod('manual')} className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'manual' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-3.5 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-6 h-6" /></div>
-              <div className="flex-1"><h3 className="text-base font-bold text-slate-800">Adicionar Manualmente</h3><p className="text-xs sm:text-sm text-slate-500">Insira o título e a duração item por item.</p></div>
+          <div className="grid grid-cols-1 gap-4">
+            <div onClick={() => setInputMethod('manual')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'manual' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
+              <div className="p-4 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-7 h-7" /></div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-800">Adicionar Manualmente</h3>
+                <p className="text-sm sm:text-base text-slate-500">Insira o título e a duração item por item.</p>
+              </div>
             </div>
 
-            <div onClick={() => setInputMethod('csv')} className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'csv' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-3.5 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-6 h-6" /></div>
-              <div className="flex-1"><h3 className="text-base font-bold text-slate-800">Importar Arquivo CSV</h3><p className="text-xs sm:text-sm text-slate-500">Carregue a sua lista inteira de uma só vez.</p></div>
+            <div onClick={() => setInputMethod('csv')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'csv' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
+              <div className="p-4 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-7 h-7" /></div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-800">Importar Arquivo CSV</h3>
+                <p className="text-sm sm:text-base text-slate-500">Carregue a sua lista inteira de uma só vez.</p>
+              </div>
             </div>
           </div>
 
           {inputMethod === 'csv' && (
-            <div className="p-5 space-y-3 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
-              <Label className="text-sm font-bold text-slate-700">Selecione o seu arquivo CSV</Label>
+            <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
+              <Label className="text-base font-bold text-slate-700">Selecione o seu arquivo CSV</Label>
               <input type="file" accept=".csv" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-              <Button variant="outline" className="w-full h-12 gap-2 text-sm border-2 border-dashed bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="w-4 h-4" /> Escolher arquivo do computador
+              <Button variant="outline" className="w-full gap-2 text-base border-2 border-dashed h-14 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="w-5 h-5" /> Escolher arquivo do computador
               </Button>
-              {episodes.length > 0 && <p className="text-xs font-semibold text-center text-green-600">✓ {episodes.length} episódios não assistidos carregados com sucesso!</p>}
+              {episodes.length > 0 && <p className="text-sm font-semibold text-center text-green-600">✓ {episodes.length} episódios não assistidos carregados com sucesso!</p>}
             </div>
           )}
 
           {inputMethod === 'manual' && (
-            <div className="p-5 space-y-3 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
-              <Label className="text-sm font-bold text-slate-700">Adicionar à Lista</Label>
-              <div className="flex gap-2">
-                <Input placeholder="Ex: The Simpsons S01E01" value={manualTitle} onChange={(e) => setManualTitle(e.target.value)} className="text-sm bg-white h-11"/>
-                <Input type="number" placeholder="Min" value={manualDuration} onChange={(e) => setManualDuration(e.target.value)} className="w-24 text-sm bg-white h-11"/>
-                <Button onClick={handleAddManual} className="px-5 text-white h-11 bg-slate-900"><Plus className="w-4 h-4" /></Button>
+            <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
+              <Label className="text-base font-bold text-slate-700">Adicionar à Lista</Label>
+              <div className="flex gap-3">
+                <Input placeholder="Ex: The Simpsons S01E01" value={manualTitle} onChange={(e) => setManualTitle(e.target.value)} className="h-12 text-base bg-white"/>
+                <Input type="number" placeholder="Min" value={manualDuration} onChange={(e) => setManualDuration(e.target.value)} className="h-12 text-base bg-white w-28"/>
+                <Button onClick={handleAddManual} className="h-12 px-6 text-white bg-slate-900"><Plus className="w-5 h-5" /></Button>
               </div>
-              <p className="text-xs text-slate-400">Total adicionado até agora: <strong className="text-slate-700">{episodes.length} itens</strong></p>
+              <p className="text-sm text-slate-400">Total adicionado até agora: <strong className="text-slate-700">{episodes.length} itens</strong></p>
             </div>
           )}
 
           <div className="flex justify-end pt-2">
-            <Button size="lg" disabled={!inputMethod || episodes.length === 0} onClick={() => setStep(2)} className="w-full gap-3 text-base font-bold text-white bg-blue-600 shadow-lg h-14 hover:bg-blue-700 shadow-blue-600/20">
-              Avançar para Grade de Horários <ArrowRight className="w-5 h-5" />
+            <Button size="lg" disabled={!inputMethod || episodes.length === 0} onClick={() => setStep(2)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
+              Avançar para Grade de Horários <ArrowRight className="w-6 h-6" />
             </Button>
           </div>
         </div>
