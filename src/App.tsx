@@ -324,6 +324,28 @@ export default function App() {
     if (error) {
       console.error('Erro ao carregar presets da nuvem:', error);
     } else if (data) {
+      if (data.length === 0) {
+        const localSaved = localStorage.getItem("marathon_planner_presets");
+        if (localSaved) {
+          try {
+            const localPresets = JSON.parse(localSaved);
+            if (Array.isArray(localPresets) && localPresets.length > 0) {
+              for (const p of localPresets) {
+                await supabase.from('user_presets').insert([{
+                  user_id: userId,
+                  name: p.name,
+                  schedule: p.schedule
+                }]);
+              }
+              localStorage.removeItem("marathon_planner_presets");
+              return fetchUserPresets(userId);
+            }
+          } catch (e) {
+            console.error("Erro ao migrar presets locais:", e);
+          }
+        }
+      }
+
       const formattedPresets = data.map((item: any) => ({
         id: item.id,
         name: item.name,
