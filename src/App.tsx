@@ -709,10 +709,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen py-10 overflow-x-hidden font-sans bg-slate-100 text-slate-900">
+    <div className="min-h-screen pt-4 pb-16 overflow-x-hidden font-sans bg-slate-100 text-slate-900">
       
-      {/* Barra de Autenticação Responsiva no Topo */}
-      <div className="flex justify-end max-w-xl px-4 mx-auto mb-6 md:max-w-3xl lg:max-w-6xl">
+      {/* Barra de Autenticação Responsiva no Topo (Intacta) */}
+      <div className="flex justify-end max-w-xl px-4 mx-auto mb-2 md:max-w-3xl lg:max-w-6xl">
         {session ? (
           <div className="flex items-center justify-between w-full gap-3 px-4 py-2 bg-white border sm:justify-end rounded-xl border-slate-200 shadow-2xs sm:w-auto">
             <span className="text-xs font-semibold text-slate-600 truncate max-w-[200px]">
@@ -756,64 +756,64 @@ export default function App() {
       </div>
 
       {step === 1 && (
-        <div className="max-w-xl px-4 mx-auto space-y-8 duration-300 animate-in fade-in">
-          <div className="flex flex-col items-center justify-center pt-6 space-y-4 text-center">
-            <div className="flex items-center justify-center w-20 h-20 p-3 mb-2 bg-blue-100 rounded-full shadow-inner">
+        <div className="max-w-xl px-4 mx-auto space-y-5 duration-300 animate-in fade-in">
+          <div className="flex flex-col items-center justify-center pt-0 space-y-2 text-center">
+            <div className="p-2.5 mb-1 bg-blue-100 rounded-full shadow-inner w-16 h-16 flex items-center justify-center">
               <img 
                 src="/logo-maratona.png" 
                 alt="Logo Maratona" 
-                className="object-contain w-12 h-12" 
+                className="object-contain w-10 h-10" 
               />
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900">Maratona de Filmes e Séries</h1>
-            <p className="max-w-md text-lg text-slate-500">Olá, como prefere adicionar os conteúdos que deseja assistir?</p>
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">Maratona de Filmes e Séries</h1>
+            <p className="max-w-md text-base text-slate-500">Olá, como prefere adicionar os conteúdos que deseja assistir?</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
-            <div onClick={() => setInputMethod('manual')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'manual' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-4 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-7 h-7" /></div>
-              <div className="flex-1"><h3 className="text-lg font-bold text-slate-800">Adicionar Manualmente</h3><p className="text-sm text-slate-500">Insira o título e a duração item por item.</p></div>
+          <div className="grid grid-cols-1 gap-3">
+            <div onClick={() => setInputMethod('manual')} className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'manual' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
+              <div className="p-3.5 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-6 h-6" /></div>
+              <div className="flex-1"><h3 className="text-base font-bold text-slate-800">Adicionar Manualmente</h3><p className="text-xs sm:text-sm text-slate-500">Insira o título e a duração item por item.</p></div>
             </div>
 
-            <div onClick={() => setInputMethod('csv')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'csv' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-4 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-7 h-7" /></div>
-              <div className="flex-1"><h3 className="text-lg font-bold text-slate-800">Importar Arquivo CSV</h3><p className="text-sm text-slate-500">Carregue a sua lista inteira de uma só vez.</p></div>
+            <div onClick={() => setInputMethod('csv')} className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'csv' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
+              <div className="p-3.5 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-6 h-6" /></div>
+              <div className="flex-1"><h3 className="text-base font-bold text-slate-800">Importar Arquivo CSV</h3><p className="text-xs sm:text-sm text-slate-500">Carregue a sua lista inteira de uma só vez.</p></div>
             </div>
           </div>
 
           {inputMethod === 'csv' && (
-            <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
-              <Label className="text-base font-bold text-slate-700">Selecione o seu arquivo CSV</Label>
+            <div className="p-5 space-y-3 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
+              <Label className="text-sm font-bold text-slate-700">Selecione o seu arquivo CSV</Label>
               <input type="file" accept=".csv" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-              <Button variant="outline" className="w-full gap-2 text-base border-2 border-dashed h-14 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="w-5 h-5" /> Escolher arquivo do computador
+              <Button variant="outline" className="w-full h-12 gap-2 text-sm border-2 border-dashed bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="w-4 h-4" /> Escolher arquivo do computador
               </Button>
-              {episodes.length > 0 && <p className="text-sm font-semibold text-center text-green-600">✓ {episodes.length} episódios carregados com sucesso!</p>}
+              {episodes.length > 0 && <p className="text-xs font-semibold text-center text-green-600">✓ {episodes.length} episódios carregados com sucesso!</p>}
             </div>
           )}
 
           {inputMethod === 'manual' && (
-            <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
-              <Label className="text-base font-bold text-slate-700">Adicionar à Lista</Label>
-              <div className="flex gap-3">
-                <Input placeholder="Ex: The Simpsons S01E01" value={manualTitle} onChange={(e) => setManualTitle(e.target.value)} className="h-12 text-base bg-white"/>
-                <Input type="number" placeholder="Min" value={manualDuration} onChange={(e) => setManualDuration(e.target.value)} className="h-12 text-base bg-white w-28"/>
-                <Button onClick={handleAddManual} className="h-12 px-6 text-white bg-slate-900"><Plus className="w-5 h-5" /></Button>
+            <div className="p-5 space-y-3 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
+              <Label className="text-sm font-bold text-slate-700">Adicionar à Lista</Label>
+              <div className="flex gap-2">
+                <Input placeholder="Ex: The Simpsons S01E01" value={manualTitle} onChange={(e) => setManualTitle(e.target.value)} className="text-sm bg-white h-11"/>
+                <Input type="number" placeholder="Min" value={manualDuration} onChange={(e) => setManualDuration(e.target.value)} className="w-24 text-sm bg-white h-11"/>
+                <Button onClick={handleAddManual} className="px-5 text-white h-11 bg-slate-900"><Plus className="w-4 h-4" /></Button>
               </div>
-              <p className="text-sm text-slate-400">Total adicionado até agora: <strong className="text-slate-700">{episodes.length} itens</strong></p>
+              <p className="text-xs text-slate-400">Total adicionado até agora: <strong className="text-slate-700">{episodes.length} itens</strong></p>
             </div>
           )}
 
-          <div className="flex justify-end pt-4">
-            <Button size="lg" disabled={!inputMethod || episodes.length === 0} onClick={() => setStep(2)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
-              Avançar para Grade de Horários <ArrowRight className="w-6 h-6" />
+          <div className="flex justify-end pt-2">
+            <Button size="lg" disabled={!inputMethod || episodes.length === 0} onClick={() => setStep(2)} className="w-full gap-3 text-base font-bold text-white bg-blue-600 shadow-lg h-14 hover:bg-blue-700 shadow-blue-600/20">
+              Avançar para Grade de Horários <ArrowRight className="w-5 h-5" />
             </Button>
           </div>
         </div>
       )}
 
       {step === 2 && (
-        <div className="max-w-3xl px-4 mx-auto space-y-6 duration-300 animate-in fade-in">
+        <div className="max-w-3xl px-4 mx-auto space-y-6 duration-300 animate-in fade-in pb-28">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={() => setStep(1)} className="gap-2 text-base text-slate-600"><ArrowLeft className="w-5 h-5" /> Voltar</Button>
             <span className="text-sm font-bold tracking-wider uppercase text-slate-400">Etapa 2 de 3</span>
@@ -837,10 +837,13 @@ export default function App() {
             onImportPresets={handleImportPresets}
           />
 
-          <div className="flex justify-end pt-4">
-            <Button size="lg" onClick={() => setStep(3)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
-              Gerar Cronograma Final <ArrowRight className="w-6 h-6" />
-            </Button>
+          {/* Botão Fixo no Fundo para a Etapa 2 */}
+          <div className="fixed bottom-0 left-0 right-0 z-40 p-4 border-t shadow-xl bg-white/90 backdrop-blur-md border-slate-200">
+            <div className="max-w-3xl px-4 mx-auto">
+              <Button size="lg" onClick={() => setStep(3)} className="w-full gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg h-14 hover:bg-blue-700">
+                Gerar Cronograma Final <ArrowRight className="w-6 h-6" />
+              </Button>
+            </div>
           </div>
         </div>
       )}
