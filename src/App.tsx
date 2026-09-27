@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar, Upload, Plus, Trash2, ListVideo, Clock, ArrowRight, CheckCircle2, EyeOff, Eye, Film, FileSpreadsheet, ArrowLeft, CalendarCheck, Bookmark, Save, X } from "lucide-react";
 import { supabase } from "./supabaseClient";
+import type { Session } from "@supabase/supabase-js";
 
 type Episode = {
   id: string;
@@ -118,16 +119,16 @@ function ScheduleBuilder({
       <CardHeader className="px-6 pt-6 pb-5 border-b bg-slate-50/50">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><Clock className="w-6 h-6 text-blue-600" /> Grade Semanal</CardTitle>
+            <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><Clock className="w-6 h-6 text-blue-600"/> Grade Semanal</CardTitle>
             <CardDescription className="mt-2 text-sm">Configure a sua rotina ou gerencie os seus presets</CardDescription>
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="default" onClick={() => setIsLoadModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-blue-700 bg-white border-blue-200 hover:bg-blue-50 shadow-2xs rounded-xl">
-              <Bookmark className="w-4 h-4" /> Carregar Preset
+            <Button onClick="{()" size="default" variant="outline"> setIsLoadModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-blue-700 bg-white border-blue-200 hover:bg-blue-50 shadow-2xs rounded-xl">
+              <Bookmark className="w-4 h-4"/> Carregar Preset
             </Button>
-            <Button size="default" onClick={() => setIsSaveModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-2xs rounded-xl">
-              <Save className="w-4 h-4" /> Salvar Preset
+            <Button onClick="{()" size="default"> setIsSaveModalOpen(true)} className="h-10 gap-2 px-4 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-2xs rounded-xl">
+              <Save className="w-4 h-4"/> Salvar Preset
             </Button>
           </div>
         </div>
@@ -150,31 +151,21 @@ function ScheduleBuilder({
                 <div className="flex flex-col items-start flex-1 gap-3 sm:max-w-md">
                   {blocks.map((block) => (
                     <div key={block.id} className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs w-full sm:w-auto">
-                      <Input 
-                        type="text" 
-                        maxLength={5}
-                        placeholder="06:00"
-                        value={block.start} 
-                        onChange={(e) => onBlockChange(day, block.id, 'start', e.target.value)} 
+                      <Input maxLength="{5}" onChange="{(e)" placeholder="06:00" type="text" value="{block.start}"> onBlockChange(day, block.id, 'start', e.target.value)} 
                         className="w-32 px-2 text-base font-bold text-center bg-slate-50/80 h-11 border-slate-200 focus-visible:ring-blue-500"
                       />
                       <span className="text-sm font-semibold text-slate-400">às</span>
-                      <Input 
-                        type="text" 
-                        maxLength={5}
-                        placeholder="07:00"
-                        value={block.end} 
-                        onChange={(e) => onBlockChange(day, block.id, 'end', e.target.value)} 
+                      <Input maxLength="{5}" onChange="{(e)" placeholder="07:00" type="text" value="{block.end}"> onBlockChange(day, block.id, 'end', e.target.value)} 
                         className="w-32 px-2 text-base font-bold text-center bg-slate-50/80 h-11 border-slate-200 focus-visible:ring-blue-500"
                       />
-                      <Button variant="ghost" size="icon" onClick={() => onRemoveBlock(day, block.id)} className="w-10 h-10 ml-2 text-slate-400 hover:text-red-500 hover:bg-red-50 shrink-0"><Trash2 className="w-5 h-5" /></Button>
+                      <Button onClick="{()" size="icon" variant="ghost"> onRemoveBlock(day, block.id)} className="w-10 h-10 ml-2 text-slate-400 hover:text-red-500 hover:bg-red-50 shrink-0"><Trash2 className="w-5 h-5"/></Button>
                     </div>
                   ))}
 
                   {blocks.length === 0 && <span className="text-sm italic text-slate-400">Nenhum horário definido.</span>}
 
-                  <Button variant="outline" size="default" onClick={() => onAddBlock(day)} className="h-10 px-4 mt-1 text-sm font-semibold bg-white text-slate-700 hover:text-blue-600 hover:border-blue-200 shadow-2xs rounded-xl">
-                    <Plus className="w-4 h-4 mr-1.5 text-blue-600" /> Adicionar horário
+                  <Button onClick="{()" size="default" variant="outline"> onAddBlock(day)} className="h-10 px-4 mt-1 text-sm font-semibold bg-white text-slate-700 hover:text-blue-600 hover:border-blue-200 shadow-2xs rounded-xl">
+                    <Plus className="w-4 h-4 mr-1.5 text-blue-600"/> Adicionar horário
                   </Button>
                 </div>
 
@@ -192,21 +183,18 @@ function ScheduleBuilder({
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 duration-200 bg-slate-900/40 backdrop-blur-xs rounded-xl animate-in fade-in">
           <div className="w-full max-w-md p-6 space-y-5 bg-white border shadow-xl rounded-2xl border-slate-200">
             <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-900"><Save className="w-5 h-5 text-blue-600" /> Salvar Novo Preset</h3>
-              <Button variant="ghost" size="icon" onClick={() => setIsSaveModalOpen(false)} className="w-8 h-8 text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></Button>
+              <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-900"><Save className="w-5 h-5 text-blue-600"/> Salvar Novo Preset</h3>
+              <Button onClick="{()" size="icon" variant="ghost"> setIsSaveModalOpen(false)} className="w-8 h-8 text-slate-400 hover:text-slate-700"><X className="w-5 h-5"/></Button>
             </div>
             <div className="space-y-2.5">
               <Label className="text-sm font-bold text-slate-700">Nome do Preset</Label>
-              <Input 
-                placeholder="Ex: Rotina de Férias, Semanal Padrão..." 
-                value={presetName}
-                onChange={(e) => setPresetName(e.target.value)}
+              <Input onChange="{(e)" placeholder="Ex: Rotina de Férias, Semanal Padrão..." value="{presetName}"> setPresetName(e.target.value)}
                 className="h-12 text-base bg-slate-50"
               />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button variant="outline" size="default" onClick={() => setIsSaveModalOpen(false)} className="px-5 text-sm h-11">Cancelar</Button>
-              <Button size="default" onClick={() => {
+              <Button onClick="{()" size="default" variant="outline"> setIsSaveModalOpen(false)} className="px-5 text-sm h-11">Cancelar</Button>
+              <Button onClick="{()" size="default"> {
                 if (!presetName.trim()) return alert("Insira um nome para o preset!");
                 onSavePreset(presetName.trim());
                 setPresetName("");
@@ -221,8 +209,8 @@ function ScheduleBuilder({
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 duration-200 bg-slate-900/40 backdrop-blur-xs rounded-xl animate-in fade-in">
           <div className="w-full max-w-md p-6 space-y-5 bg-white border shadow-xl rounded-2xl border-slate-200">
             <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-900"><Bookmark className="w-5 h-5 text-blue-600" /> Carregar Preset</h3>
-              <Button variant="ghost" size="icon" onClick={() => setIsLoadModalOpen(false)} className="w-8 h-8 text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></Button>
+              <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-900"><Bookmark className="w-5 h-5 text-blue-600"/> Carregar Preset</h3>
+              <Button onClick="{()" size="icon" variant="ghost"> setIsLoadModalOpen(false)} className="w-8 h-8 text-slate-400 hover:text-slate-700"><X className="w-5 h-5"/></Button>
             </div>
             
             <div className="pr-1 space-y-3 overflow-y-auto max-h-60">
@@ -233,11 +221,11 @@ function ScheduleBuilder({
                   <div key={preset.id} className="flex items-center justify-between p-3.5 transition-all border bg-slate-50 border-slate-200 rounded-xl hover:border-blue-300">
                     <span className="text-base font-bold text-slate-800 truncate max-w-[220px]">{preset.name}</span>
                     <div className="flex items-center gap-2">
-                      <Button size="default" onClick={() => {
+                      <Button onClick="{()" size="default"> {
                         onLoadPreset(preset.schedule);
                         setIsLoadModalOpen(false);
                       }} className="px-4 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700 shadow-2xs">Carregar</Button>
-                      <Button variant="ghost" size="icon" onClick={() => onDeletePreset(preset.id)} className="w-9 h-9 text-slate-400 hover:text-red-500 hover:bg-red-50"><Trash2 className="w-4 h-4" /></Button>
+                      <Button onClick="{()" size="icon" variant="ghost"> onDeletePreset(preset.id)} className="w-9 h-9 text-slate-400 hover:text-red-500 hover:bg-red-50"><Trash2 className="w-4 h-4"/></Button>
                     </div>
                   </div>
                 ))
@@ -248,17 +236,17 @@ function ScheduleBuilder({
               <p className="text-xs font-semibold text-slate-500">Backup em Ficheiro:</p>
               <input type="file" accept=".json" ref={presetFileInputRef} onChange={onImportPresets} className="hidden" />
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => presetFileInputRef.current?.click()} className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50">
-                  <Upload className="w-4 h-4 text-blue-600" /> Importar (JSON)
+                <Button onClick="{()" variant="outline"> presetFileInputRef.current?.click()} className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50">
+                  <Upload className="w-4 h-4 text-blue-600"/> Importar (JSON)
                 </Button>
-                <Button variant="outline" onClick={onExportPresets} className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50">
-                  <Download className="w-4 h-4 text-blue-600" /> Exportar (JSON)
+                <Button className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50" onClick="{onExportPresets}" variant="outline">
+                  <Download className="w-4 h-4 text-blue-600"/> Exportar (JSON)
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-end pt-2">
-              <Button variant="outline" size="default" onClick={() => setIsLoadModalOpen(false)} className="w-full text-sm font-semibold h-11">Fechar</Button>
+              <Button onClick="{()" size="default" variant="outline"> setIsLoadModalOpen(false)} className="w-full text-sm font-semibold h-11">Fechar</Button>
             </div>
           </div>
         </div>
@@ -268,7 +256,7 @@ function ScheduleBuilder({
 }
 
 export default function App() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session null |>(null);
   const [emailInput, setEmailInput] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -291,21 +279,21 @@ export default function App() {
   const [manualDuration, setManualDuration] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Gestão de Sessão e Carregamento de Presets (Supabase ou LocalStorage)
+  // Gestão de Sessão e Carregamento de Presets com tipagem estrita
   React.useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        fetchUserPresets(session.user.id);
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (currentSession) {
+        fetchUserPresets(currentSession.user.id);
       } else {
         loadLocalPresets();
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        fetchUserPresets(session.user.id);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, currentSession: Session | null) => {
+      setSession(currentSession);
+      if (currentSession) {
+        fetchUserPresets(currentSession.user.id);
       } else {
         loadLocalPresets();
       }
@@ -685,10 +673,7 @@ export default function App() {
             <span className="text-xs font-semibold text-slate-600 truncate max-w-[200px]">
               {session.user.email}
             </span>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => supabase.auth.signOut()} 
+            <Button onClick="{()" size="sm" variant="outline"> supabase.auth.signOut()} 
               className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50"
             >
               Sair
@@ -696,19 +681,10 @@ export default function App() {
           </div>
         ) : (
           <form onSubmit={handleEmailLogin} className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
-            <Input 
-              type="email" 
-              placeholder="O seu e-mail..." 
-              value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
+            <Input onChange="{(e)" placeholder="O seu e-mail..." type="email" value="{emailInput}"> setEmailInput(e.target.value)}
               className="text-xs h-9 w-52 bg-slate-50 border-slate-200"
             />
-            <Button 
-              type="submit"
-              size="sm" 
-              disabled={loadingAuth}
-              className="px-3 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700"
-            >
+            <Button className="px-3 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700" disabled="{loadingAuth}" size="sm" type="submit">
               {loadingAuth ? "A enviar..." : "Entrar / Sincronizar"}
             </Button>
           </form>
@@ -731,12 +707,12 @@ export default function App() {
 
           <div className="grid grid-cols-1 gap-4">
             <div onClick={() => setInputMethod('manual')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'manual' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-4 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-7 h-7" /></div>
+              <div className="p-4 text-blue-600 bg-blue-50 rounded-xl"><Film className="w-7 h-7"/></div>
               <div className="flex-1"><h3 className="text-lg font-bold text-slate-800">Adicionar Manualmente</h3><p className="text-sm text-slate-500">Insira o título e a duração item por item.</p></div>
             </div>
 
             <div onClick={() => setInputMethod('csv')} className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-5 bg-white shadow-sm hover:border-blue-500 ${inputMethod === 'csv' ? 'border-blue-600 ring-2 ring-blue-100 bg-blue-50/20' : 'border-slate-200'}`}>
-              <div className="p-4 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-7 h-7" /></div>
+              <div className="p-4 text-indigo-600 bg-indigo-50 rounded-xl"><FileSpreadsheet className="w-7 h-7"/></div>
               <div className="flex-1"><h3 className="text-lg font-bold text-slate-800">Importar Arquivo CSV</h3><p className="text-sm text-slate-500">Carregue a sua lista inteira de uma só vez.</p></div>
             </div>
           </div>
@@ -745,8 +721,8 @@ export default function App() {
             <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
               <Label className="text-base font-bold text-slate-700">Selecione o seu arquivo CSV</Label>
               <input type="file" accept=".csv" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-              <Button variant="outline" className="w-full gap-2 text-base border-2 border-dashed h-14 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="w-5 h-5" /> Escolher arquivo do computador
+              <Button className="w-full gap-2 text-base border-2 border-dashed h-14 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick="{()" variant="outline"> fileInputRef.current?.click()}>
+                <Upload className="w-5 h-5"/> Escolher arquivo do computador
               </Button>
               {episodes.length > 0 && <p className="text-sm font-semibold text-center text-green-600">✓ {episodes.length} episódios carregados com sucesso!</p>}
             </div>
@@ -756,17 +732,17 @@ export default function App() {
             <div className="p-6 space-y-4 bg-white border rounded-2xl border-slate-200 animate-in fade-in">
               <Label className="text-base font-bold text-slate-700">Adicionar à Lista</Label>
               <div className="flex gap-3">
-                <Input placeholder="Ex: The Simpsons S01E01" value={manualTitle} onChange={(e) => setManualTitle(e.target.value)} className="h-12 text-base bg-white"/>
-                <Input type="number" placeholder="Min" value={manualDuration} onChange={(e) => setManualDuration(e.target.value)} className="h-12 text-base bg-white w-28"/>
-                <Button onClick={handleAddManual} className="h-12 px-6 text-white bg-slate-900"><Plus className="w-5 h-5" /></Button>
+                <Input onChange="{(e)" placeholder="Ex: The Simpsons S01E01" value="{manualTitle}"> setManualTitle(e.target.value)} className="h-12 text-base bg-white"/>
+                <Input onChange="{(e)" placeholder="Min" type="number" value="{manualDuration}"> setManualDuration(e.target.value)} className="h-12 text-base bg-white w-28"/>
+                <Button className="h-12 px-6 text-white bg-slate-900" onClick="{handleAddManual}"><Plus className="w-5 h-5"/></Button>
               </div>
               <p className="text-sm text-slate-400">Total adicionado até agora: <strong className="text-slate-700">{episodes.length} itens</strong></p>
             </div>
           )}
 
           <div className="flex justify-end pt-4">
-            <Button size="lg" disabled={!inputMethod || episodes.length === 0} onClick={() => setStep(2)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
-              Avançar para Grade de Horários <ArrowRight className="w-6 h-6" />
+            <Button 0} disabled="{!inputMethod" episodes.length="==" onClick="{()" size="lg" ||> setStep(2)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
+              Avançar para Grade de Horários <ArrowRight className="w-6 h-6"/>
             </Button>
           </div>
         </div>
@@ -775,7 +751,7 @@ export default function App() {
       {step === 2 && (
         <div className="max-w-3xl px-4 mx-auto space-y-6 duration-300 animate-in fade-in">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={() => setStep(1)} className="gap-2 text-base text-slate-600"><ArrowLeft className="w-5 h-5" /> Voltar</Button>
+            <Button onClick="{()" variant="ghost"> setStep(1)} className="gap-2 text-base text-slate-600"><ArrowLeft className="w-5 h-5"/> Voltar</Button>
             <span className="text-sm font-bold tracking-wider uppercase text-slate-400">Etapa 2 de 3</span>
           </div>
 
@@ -784,22 +760,11 @@ export default function App() {
             <p className="text-base text-slate-500">Informe os horários livres em que pretende assistir conteúdos durante a semana.</p>
           </div>
 
-          <ScheduleBuilder 
-            schedule={schedule} 
-            presets={presets}
-            onAddBlock={handleAddBlock} 
-            onRemoveBlock={handleRemoveBlock} 
-            onBlockChange={handleBlockChange} 
-            onSavePreset={handleSavePreset}
-            onLoadPreset={handleLoadPreset}
-            onDeletePreset={handleDeletePreset}
-            onExportPresets={handleExportPresets}
-            onImportPresets={handleImportPresets}
-          />
+          <ScheduleBuilder onAddBlock="{handleAddBlock}" onBlockChange="{handleBlockChange}" onDeletePreset="{handleDeletePreset}" onExportPresets="{handleExportPresets}" onImportPresets="{handleImportPresets}" onLoadPreset="{handleLoadPreset}" onRemoveBlock="{handleRemoveBlock}" onSavePreset="{handleSavePreset}" presets="{presets}" schedule="{schedule}"/>
 
           <div className="flex justify-end pt-4">
-            <Button size="lg" onClick={() => setStep(3)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
-              Gerar Cronograma Final <ArrowRight className="w-6 h-6" />
+            <Button onClick="{()" size="lg"> setStep(3)} className="w-full h-16 gap-3 text-lg font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 shadow-blue-600/20">
+              Gerar Cronograma Final <ArrowRight className="w-6 h-6"/>
             </Button>
           </div>
         </div>
@@ -810,17 +775,17 @@ export default function App() {
           
           <div className="flex flex-col justify-between gap-4 mb-8 sm:flex-row sm:items-center">
             <div className="flex items-center gap-4">
-              <div className="p-3.5 text-white bg-blue-600 shadow-sm rounded-xl"><Calendar className="w-8 h-8" /></div>
+              <div className="p-3.5 text-white bg-blue-600 shadow-sm rounded-xl"><Calendar className="w-8 h-8"/></div>
               <div>
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900">Maratona de Séries</h1>
-                <div className="flex items-center gap-2 text-base font-medium text-green-600"><CheckCircle2 className="w-5 h-5" /> Cronograma gerado com sucesso!</div>
+                <div className="flex items-center gap-2 text-base font-medium text-green-600"><CheckCircle2 className="w-5 h-5"/> Cronograma gerado com sucesso!</div>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="default" onClick={() => setStep(2)} className="px-4 text-sm font-semibold bg-white h-11 text-slate-700 border-slate-200">Ajustar Horários</Button>
-              <Button variant="outline" size="default" onClick={() => setShowSchedule(!showSchedule)} className="px-4 text-sm font-semibold bg-white h-11 text-slate-700 border-slate-200">
-                {showSchedule ? <><EyeOff className="w-4 h-4 mr-2 text-slate-400" /> Esconder Grade</> : <><Eye className="w-4 h-4 mr-2 text-blue-600" /> Ver Grade</>}
+              <Button onClick="{()" size="default" variant="outline"> setStep(2)} className="px-4 text-sm font-semibold bg-white h-11 text-slate-700 border-slate-200">Ajustar Horários</Button>
+              <Button onClick="{()" size="default" variant="outline"> setShowSchedule(!showSchedule)} className="px-4 text-sm font-semibold bg-white h-11 text-slate-700 border-slate-200">
+                {showSchedule ? <><EyeOff className="w-4 h-4 mr-2 text-slate-400"/> Esconder Grade</> : <><Eye className="w-4 h-4 mr-2 text-blue-600"/> Ver Grade</>}
               </Button>
             </div>
           </div>
@@ -829,18 +794,7 @@ export default function App() {
             
             {showSchedule && (
               <div className="space-y-6 lg:col-span-5">
-                <ScheduleBuilder 
-                  schedule={schedule} 
-                  presets={presets}
-                  onAddBlock={handleAddBlock} 
-                  onRemoveBlock={handleRemoveBlock} 
-                  onBlockChange={handleBlockChange} 
-                  onSavePreset={handleSavePreset}
-                  onLoadPreset={handleLoadPreset}
-                  onDeletePreset={handleDeletePreset}
-                  onExportPresets={handleExportPresets}
-                  onImportPresets={handleImportPresets}
-                />
+                <ScheduleBuilder onAddBlock="{handleAddBlock}" onBlockChange="{handleBlockChange}" onDeletePreset="{handleDeletePreset}" onExportPresets="{handleExportPresets}" onImportPresets="{handleImportPresets}" onLoadPreset="{handleLoadPreset}" onRemoveBlock="{handleRemoveBlock}" onSavePreset="{handleSavePreset}" presets="{presets}" schedule="{schedule}"/>
               </div>
             )}
 
@@ -853,7 +807,7 @@ export default function App() {
                     <p className="text-2xl font-bold text-slate-800">{episodes.length} Episódios programados</p>
                     <p className="text-sm text-slate-500">Tempo total de conteúdo: {formatMinutesToDisplay(totalContentMinutes)}</p>
                   </div>
-                  <Button variant="outline" size="default" onClick={() => setStep(1)} className="px-4 text-sm font-semibold h-11">
+                  <Button onClick="{()" size="default" variant="outline"> setStep(1)} className="px-4 text-sm font-semibold h-11">
                     Adicionar mais itens
                   </Button>
                 </CardContent>
@@ -862,14 +816,14 @@ export default function App() {
               <Card className="border-slate-200 shadow-sm flex flex-col h-[560px] bg-white">
                 <CardHeader className="px-6 py-4 border-b bg-slate-50/50">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><CalendarCheck className="w-6 h-6 text-blue-600" /> Agenda Detalhada</CardTitle>
+                    <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><CalendarCheck className="w-6 h-6 text-blue-600"/> Agenda Detalhada</CardTitle>
                     <span className="text-sm font-medium text-slate-500">{fullChronogram.length} episódios carregados</span>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 p-5 overflow-y-auto">
                   {fullChronogram.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full space-y-3 text-slate-400">
-                      <ListVideo className="w-16 h-16 opacity-20" />
+                      <ListVideo className="w-16 h-16 opacity-20"/>
                       <p className="text-base text-center">As faixas horárias de hoje já passaram ou a grade está vazia. O sistema ajustou para o próximo dia útil.</p>
                     </div>
                   ) : (
@@ -906,8 +860,8 @@ export default function App() {
                 </CardContent>
                 
                 <CardFooter className="p-5 border-t bg-slate-50/80">
-                   <Button onClick={handleExportCSV} className="w-full gap-3 text-lg font-bold text-white shadow-md h-14 bg-slate-900 hover:bg-slate-800 rounded-xl">
-                      <Download className="w-6 h-6" /> Exportar Maratona Detalhada (CSV)
+                   <Button className="w-full gap-3 text-lg font-bold text-white shadow-md h-14 bg-slate-900 hover:bg-slate-800 rounded-xl" onClick="{handleExportCSV}">
+                      <Download className="w-6 h-6"/> Exportar Maratona Detalhada (CSV)
                    </Button>
                 </CardFooter>
               </Card>
