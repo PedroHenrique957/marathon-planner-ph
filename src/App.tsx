@@ -271,6 +271,7 @@ function ScheduleBuilder({
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [inputMethod, setInputMethod] = useState<'manual' | 'csv' | null>(null);
@@ -357,25 +358,37 @@ export default function App() {
     } catch (e) {}
   };
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleEmailPasswordAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailInput.trim()) return alert("Insira o seu e-mail!");
+    if (!emailInput.trim() || !passwordInput.trim()) {
+      return alert("Insere o e-mail e a palavra-passe!");
+    }
     
     setLoadingAuth(true);
-    const { error } = await supabase.auth.signInWithOtp({
+    
+    // Tenta fazer login primeiro
+    const { error: loginError } = await supabase.auth.signInWithPassword({
       email: emailInput,
-      options: {
-        emailRedirectTo: window.location.origin,
-      },
+      password: passwordInput,
     });
-    setLoadingAuth(false);
 
-    if (error) {
-      alert("Erro ao enviar o link: " + error.message);
-    } else {
-      alert("Link de acesso enviado! Verifique a sua caixa de entrada e spam.");
-      setEmailInput("");
+    if (loginError) {
+      // Se não existir, tenta criar a conta automaticamente
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: emailInput,
+        password: passwordInput,
+      });
+      
+      if (signUpError) {
+        alert("Erro de autenticação: " + signUpError.message);
+      } else {
+        alert("Conta criada e sessão iniciada com sucesso!");
+      }
     }
+    
+    setLoadingAuth(false);
+    setEmailInput("");
+    setPasswordInput("");
   };
 
   const handleAddBlock = (day: keyof WeekSchedule) => setSchedule(prev => ({ 
@@ -678,6 +691,7 @@ export default function App() {
   return (
     <div className="min-h-screen py-10 overflow-x-hidden font-sans bg-slate-100 text-slate-900">
       
+      {/* Barra de Autenticação por E-mail e Palavra-passe no Topo */}
       <div className="flex justify-end max-w-xl px-4 mx-auto mb-6 md:max-w-3xl lg:max-w-6xl">
         {session ? (
           <div className="flex items-center gap-3 px-4 py-2 bg-white border rounded-xl border-slate-200 shadow-2xs">
@@ -694,13 +708,20 @@ export default function App() {
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleEmailLogin} className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
+          <form onSubmit={handleEmailPasswordAuth} className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
             <Input 
               type="email" 
               placeholder="O seu e-mail..." 
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
-              className="text-xs h-9 w-52 bg-slate-50 border-slate-200"
+              className="text-xs h-9 w-44 bg-slate-50 border-slate-200"
+            />
+            <Input 
+              type="password" 
+              placeholder="Palavra-passe..." 
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className="text-xs h-9 w-36 bg-slate-50 border-slate-200"
             />
             <Button 
               type="submit"
@@ -708,7 +729,7 @@ export default function App() {
               disabled={loadingAuth}
               className="px-3 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700"
             >
-              {loadingAuth ? "A enviar..." : "Entrar / Sincronizar"}
+              {loadingAuth ? "A entrar..." : "Entrar / Criar"}
             </Button>
           </form>
         )}
