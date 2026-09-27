@@ -901,10 +901,7 @@ export default function App() {
 
               <Card className="border-slate-200 shadow-sm flex flex-col h-[560px] bg-white">
                 <CardHeader className="px-6 py-4 border-b bg-slate-50/50">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><CalendarCheck className="w-6 h-6 text-blue-600" /> Agenda Detalhada</CardTitle>
-                    <span className="text-sm font-medium text-slate-500">{fullChronogram.length} episódios carregados</span>
-                  </div>
+                  <CardTitle className="flex items-center gap-2.5 text-xl font-bold"><CalendarCheck className="w-6 h-6 text-blue-600" /> Agenda Detalhada</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 p-5 overflow-y-auto">
                   {fullChronogram.length === 0 ? (
