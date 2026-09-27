@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar, Upload, Plus, Trash2, ListVideo, Clock, ArrowRight, CheckCircle2, EyeOff, Eye, Film, FileSpreadsheet, ArrowLeft, CalendarCheck, Bookmark, Save, X } from "lucide-react";
+import { supabase } from "./supabaseClient";
 
 type Episode = {
   id: string;
@@ -78,7 +79,6 @@ const parseEpisodeData = (rawText: string) => {
   return { title: title || "Episódio", sxe };
 };
 
-// Componente de Grade com espaçamento adequado entre bordas e textos
 type ScheduleBuilderProps = {
   schedule: WeekSchedule;
   presets: SchedulePreset[];
@@ -88,12 +88,26 @@ type ScheduleBuilderProps = {
   onSavePreset: (name: string) => void;
   onLoadPreset: (presetSchedule: WeekSchedule) => void;
   onDeletePreset: (presetId: string) => void;
+  onExportPresets: () => void;
+  onImportPresets: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlockChange, onSavePreset, onLoadPreset, onDeletePreset }: ScheduleBuilderProps) {
+function ScheduleBuilder({ 
+  schedule, 
+  presets, 
+  onAddBlock, 
+  onRemoveBlock, 
+  onBlockChange, 
+  onSavePreset, 
+  onLoadPreset, 
+  onDeletePreset,
+  onExportPresets,
+  onImportPresets
+}: ScheduleBuilderProps) {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isLoadModalOpen, setIsLoadModalOpen] = useState(false);
   const [presetName, setPresetName] = useState("");
+  const presetFileInputRef = useRef<HTMLInputElement>(null);
 
   const totalWeeklyMinutes = (Object.keys(schedule) as Array<keyof WeekSchedule>).reduce((acc, day) => {
     return acc + schedule[day].reduce((dayAcc, block) => dayAcc + getMinutesBetween(block.start, block.end), 0);
@@ -126,7 +140,6 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
             return (
               <div key={day} className="flex flex-col justify-between gap-4 p-5 transition-colors border border-slate-200 rounded-2xl bg-slate-50/40 hover:border-slate-300 sm:flex-row sm:items-start">
                 
-                {/* Nome do Dia e Tag de Duração */}
                 <div className="flex items-center gap-3.5 pt-2 shrink-0">
                   <Label className="text-base font-bold w-36 text-slate-900">{dayNames[day]}</Label>
                   <span className="px-3 py-1 text-sm font-semibold bg-white border rounded-lg text-slate-700 border-slate-200 shadow-2xs">
@@ -134,7 +147,6 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
                   </span>
                 </div>
 
-                {/* Blocos de Horário e Botão Adicionar */}
                 <div className="flex flex-col items-start flex-1 gap-3 sm:max-w-md">
                   {blocks.map((block) => (
                     <div key={block.id} className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs w-full sm:w-auto">
@@ -176,7 +188,6 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
         </div>
       </CardContent>
 
-      {/* MINI JANELA: SALVAR PRESET */}
       {isSaveModalOpen && (
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 duration-200 bg-slate-900/40 backdrop-blur-xs rounded-xl animate-in fade-in">
           <div className="w-full max-w-md p-6 space-y-5 bg-white border shadow-xl rounded-2xl border-slate-200">
@@ -206,7 +217,6 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
         </div>
       )}
 
-      {/* MINI JANELA: CARREGAR PRESET */}
       {isLoadModalOpen && (
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 duration-200 bg-slate-900/40 backdrop-blur-xs rounded-xl animate-in fade-in">
           <div className="w-full max-w-md p-6 space-y-5 bg-white border shadow-xl rounded-2xl border-slate-200">
@@ -215,9 +225,9 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
               <Button variant="ghost" size="icon" onClick={() => setIsLoadModalOpen(false)} className="w-8 h-8 text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></Button>
             </div>
             
-            <div className="pr-1 space-y-3 overflow-y-auto max-h-72">
+            <div className="pr-1 space-y-3 overflow-y-auto max-h-60">
               {presets.length === 0 ? (
-                <p className="py-8 text-sm text-center border border-dashed text-slate-400 bg-slate-50 rounded-xl">Nenhum preset salvo ainda.</p>
+                <p className="py-6 text-sm text-center border border-dashed text-slate-400 bg-slate-50 rounded-xl">Nenhum preset salvo ainda.</p>
               ) : (
                 presets.map((preset) => (
                   <div key={preset.id} className="flex items-center justify-between p-3.5 transition-all border bg-slate-50 border-slate-200 rounded-xl hover:border-blue-300">
@@ -234,6 +244,19 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
               )}
             </div>
 
+            <div className="pt-3 space-y-2 border-t border-slate-200">
+              <p className="text-xs font-semibold text-slate-500">Backup em Ficheiro:</p>
+              <input type="file" accept=".json" ref={presetFileInputRef} onChange={onImportPresets} className="hidden" />
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => presetFileInputRef.current?.click()} className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50">
+                  <Upload className="w-4 h-4 text-blue-600" /> Importar (JSON)
+                </Button>
+                <Button variant="outline" onClick={onExportPresets} className="flex-1 h-10 text-xs font-semibold gap-1.5 bg-slate-50">
+                  <Download className="w-4 h-4 text-blue-600" /> Exportar (JSON)
+                </Button>
+              </div>
+            </div>
+
             <div className="flex justify-end pt-2">
               <Button variant="outline" size="default" onClick={() => setIsLoadModalOpen(false)} className="w-full text-sm font-semibold h-11">Fechar</Button>
             </div>
@@ -245,6 +268,9 @@ function ScheduleBuilder({ schedule, presets, onAddBlock, onRemoveBlock, onBlock
 }
 
 export default function App() {
+  const [session, setSession] = useState<any>(null);
+  const [emailInput, setEmailInput] = useState("");
+  const [loadingAuth, setLoadingAuth] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [inputMethod, setInputMethod] = useState<'manual' | 'csv' | null>(null);
   const [showSchedule, setShowSchedule] = useState(false);
@@ -259,32 +285,98 @@ export default function App() {
     sab: [{ id: "7", start: "13:30", end: "17:00" }]
   });
 
-  const [presets, setPresets] = useState<SchedulePreset[]>(() => {
-    try {
-      const saved = localStorage.getItem("marathon_planner_presets");
-      if (saved) return JSON.parse(saved);
-    } catch (e) {}
-    return [
-      {
-        id: "default-1",
-        name: "Rotina Matinal Rápida",
-        schedule: {
-          dom: [{ id: "d1", start: "13:30", end: "17:00" }],
-          seg: [{ id: "s1", start: "06:00", end: "07:00" }],
-          ter: [{ id: "t1", start: "06:00", end: "07:00" }],
-          qua: [{ id: "q1", start: "06:00", end: "07:00" }],
-          qui: [{ id: "qu1", start: "06:00", end: "07:00" }],
-          sex: [{ id: "se1", start: "06:00", end: "07:00" }],
-          sab: [{ id: "sa1", start: "13:30", end: "17:00" }]
-        }
-      }
-    ];
-  });
-
+  const [presets, setPresets] = useState<SchedulePreset[]>([]);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [manualTitle, setManualTitle] = useState("");
   const [manualDuration, setManualDuration] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Gestão de Sessão e Carregamento de Presets (Supabase ou LocalStorage)
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchUserPresets(session.user.id);
+      } else {
+        loadLocalPresets();
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchUserPresets(session.user.id);
+      } else {
+        loadLocalPresets();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserPresets = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_presets')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Erro ao carregar presets da nuvem:', error);
+    } else if (data) {
+      const formattedPresets = data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        schedule: item.schedule
+      }));
+      setPresets(formattedPresets);
+    }
+  };
+
+  const loadLocalPresets = () => {
+    try {
+      const saved = localStorage.getItem("marathon_planner_presets");
+      if (saved) {
+        setPresets(JSON.parse(saved));
+      } else {
+        setPresets([
+          {
+            id: "default-1",
+            name: "Rotina Matinal Rápida",
+            schedule: {
+              dom: [{ id: "d1", start: "13:30", end: "17:00" }],
+              seg: [{ id: "s1", start: "06:00", end: "07:00" }],
+              ter: [{ id: "t1", start: "06:00", end: "07:00" }],
+              qua: [{ id: "q1", start: "06:00", end: "07:00" }],
+              qui: [{ id: "qu1", start: "06:00", end: "07:00" }],
+              sex: [{ id: "se1", start: "06:00", end: "07:00" }],
+              sab: [{ id: "sa1", start: "13:30", end: "17:00" }]
+            }
+          }
+        ]);
+      }
+    } catch (e) {}
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailInput.trim()) return alert("Insira o seu e-mail!");
+    
+    setLoadingAuth(true);
+    const { error } = await supabase.auth.signInWithOtp({
+      email: emailInput,
+      options: {
+        emailRedirectTo: window.location.origin,
+      },
+    });
+    setLoadingAuth(false);
+
+    if (error) {
+      alert("Erro ao enviar o link: " + error.message);
+    } else {
+      alert("Link de acesso enviado! Verifique a sua caixa de entrada e spam.");
+      setEmailInput("");
+    }
+  };
 
   const handleAddBlock = (day: keyof WeekSchedule) => setSchedule(prev => ({ 
     ...prev, 
@@ -306,29 +398,101 @@ export default function App() {
     }));
   };
 
-  const handleSavePreset = (name: string) => {
-    const newPreset: SchedulePreset = {
-      id: Math.random().toString(),
-      name,
-      schedule: JSON.parse(JSON.stringify(schedule))
-    };
-    const updated = [...presets, newPreset];
-    setPresets(updated);
-    try {
-      localStorage.setItem("marathon_planner_presets", JSON.stringify(updated));
-    } catch (e) {}
+  const handleSavePreset = async (name: string) => {
+    const scheduleCopy = JSON.parse(JSON.stringify(schedule));
+
+    if (session) {
+      const { data, error } = await supabase
+        .from('user_presets')
+        .insert([{ user_id: session.user.id, name, schedule: scheduleCopy }])
+        .select();
+
+      if (error) {
+        alert("Erro ao salvar preset na nuvem: " + error.message);
+      } else if (data) {
+        setPresets(prev => [...prev, { id: data[0].id, name, schedule: scheduleCopy }]);
+        alert("Preset guardado na nuvem com sucesso!");
+      }
+    } else {
+      const newPreset: SchedulePreset = {
+        id: Math.random().toString(),
+        name,
+        schedule: scheduleCopy
+      };
+      const updated = [...presets, newPreset];
+      setPresets(updated);
+      try {
+        localStorage.setItem("marathon_planner_presets", JSON.stringify(updated));
+      } catch (e) {}
+    }
   };
 
   const handleLoadPreset = (presetSchedule: WeekSchedule) => {
     setSchedule(JSON.parse(JSON.stringify(presetSchedule)));
   };
 
-  const handleDeletePreset = (presetId: string) => {
+  const handleDeletePreset = async (presetId: string) => {
+    if (session) {
+      const { error } = await supabase
+        .from('user_presets')
+        .delete()
+        .eq('id', presetId);
+
+      if (error) {
+        alert("Erro ao apagar preset: " + error.message);
+        return;
+      }
+    }
+
     const updated = presets.filter(p => p.id !== presetId);
     setPresets(updated);
-    try {
-      localStorage.setItem("marathon_planner_presets", JSON.stringify(updated));
-    } catch (e) {}
+    if (!session) {
+      try {
+        localStorage.setItem("marathon_planner_presets", JSON.stringify(updated));
+      } catch (e) {}
+    }
+  };
+
+  const handleExportPresets = () => {
+    if (presets.length === 0) return alert("Não há presets para exportar!");
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presets, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "maratona_presets.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  const handleImportPresets = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const imported = JSON.parse(content);
+        if (Array.isArray(imported)) {
+          const merged = [...presets];
+          imported.forEach((p: SchedulePreset) => {
+            if (!merged.some(existing => existing.name === p.name)) {
+              merged.push(p);
+            }
+          });
+          setPresets(merged);
+          if (!session) {
+            localStorage.setItem("marathon_planner_presets", JSON.stringify(merged));
+          }
+          alert("Presets importados com sucesso!");
+        } else {
+          alert("O formato do ficheiro de presets é inválido.");
+        }
+      } catch (err) {
+        alert("Erro ao ler o ficheiro de presets.");
+      }
+    };
+    reader.readAsText(file);
+    if (e.target) e.target.value = "";
   };
 
   const totalWeeklyMinutes = (Object.keys(schedule) as Array<keyof WeekSchedule>).reduce((acc, day) => {
@@ -514,10 +678,46 @@ export default function App() {
   return (
     <div className="min-h-screen py-10 overflow-x-hidden font-sans bg-slate-100 text-slate-900">
       
+      {/* Barra de Autenticação por E-mail no Topo */}
+      <div className="flex justify-end max-w-xl px-4 mx-auto mb-6 md:max-w-3xl lg:max-w-6xl">
+        {session ? (
+          <div className="flex items-center gap-3 px-4 py-2 bg-white border rounded-xl border-slate-200 shadow-2xs">
+            <span className="text-xs font-semibold text-slate-600 truncate max-w-[200px]">
+              {session.user.email}
+            </span>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => supabase.auth.signOut()} 
+              className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50"
+            >
+              Sair
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleEmailLogin} className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
+            <Input 
+              type="email" 
+              placeholder="O seu e-mail..." 
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              className="text-xs h-9 w-52 bg-slate-50 border-slate-200"
+            />
+            <Button 
+              type="submit"
+              size="sm" 
+              disabled={loadingAuth}
+              className="px-3 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700"
+            >
+              {loadingAuth ? "A enviar..." : "Entrar / Sincronizar"}
+            </Button>
+          </form>
+        )}
+      </div>
+
       {step === 1 && (
         <div className="max-w-xl px-4 mx-auto space-y-8 duration-300 animate-in fade-in">
           <div className="flex flex-col items-center justify-center pt-6 space-y-4 text-center">
-            {/* Em vez do <PopcornIcon />, usas a tag <img> a apontar para a pasta public */}
             <div className="flex items-center justify-center w-20 h-20 p-3 mb-2 bg-blue-100 rounded-full shadow-inner">
               <img 
                 src="/logo-maratona.png" 
@@ -593,6 +793,8 @@ export default function App() {
             onSavePreset={handleSavePreset}
             onLoadPreset={handleLoadPreset}
             onDeletePreset={handleDeletePreset}
+            onExportPresets={handleExportPresets}
+            onImportPresets={handleImportPresets}
           />
 
           <div className="flex justify-end pt-4">
@@ -636,6 +838,8 @@ export default function App() {
                   onSavePreset={handleSavePreset}
                   onLoadPreset={handleLoadPreset}
                   onDeletePreset={handleDeletePreset}
+                  onExportPresets={handleExportPresets}
+                  onImportPresets={handleImportPresets}
                 />
               </div>
             )}
