@@ -366,14 +366,12 @@ export default function App() {
     
     setLoadingAuth(true);
     
-    // Tenta fazer login primeiro
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: emailInput,
       password: passwordInput,
     });
 
     if (loginError) {
-      // Se não existir, tenta criar a conta automaticamente
       const { error: signUpError } = await supabase.auth.signUp({
         email: emailInput,
         password: passwordInput,
@@ -691,10 +689,10 @@ export default function App() {
   return (
     <div className="min-h-screen py-10 overflow-x-hidden font-sans bg-slate-100 text-slate-900">
       
-      {/* Barra de Autenticação por E-mail e Palavra-passe no Topo */}
+      {/* Barra de Autenticação Responsiva no Topo */}
       <div className="flex justify-end max-w-xl px-4 mx-auto mb-6 md:max-w-3xl lg:max-w-6xl">
         {session ? (
-          <div className="flex items-center gap-3 px-4 py-2 bg-white border rounded-xl border-slate-200 shadow-2xs">
+          <div className="flex items-center justify-between w-full gap-3 px-4 py-2 bg-white border sm:justify-end rounded-xl border-slate-200 shadow-2xs sm:w-auto">
             <span className="text-xs font-semibold text-slate-600 truncate max-w-[200px]">
               {session.user.email}
             </span>
@@ -702,32 +700,32 @@ export default function App() {
               variant="outline" 
               size="sm" 
               onClick={() => supabase.auth.signOut()} 
-              className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50"
+              className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 shrink-0"
             >
               Sair
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleEmailPasswordAuth} className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
+          <form onSubmit={handleEmailPasswordAuth} className="flex flex-col items-stretch w-full gap-2 p-2 bg-white border shadow-sm sm:flex-row sm:items-center rounded-2xl border-slate-200 sm:w-auto">
             <Input 
               type="email" 
               placeholder="O seu e-mail..." 
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
-              className="text-xs h-9 w-44 bg-slate-50 border-slate-200"
+              className="w-full h-10 text-xs sm:h-9 sm:w-44 bg-slate-50 border-slate-200"
             />
             <Input 
               type="password" 
               placeholder="Palavra-passe..." 
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
-              className="text-xs h-9 w-36 bg-slate-50 border-slate-200"
+              className="w-full h-10 text-xs sm:h-9 sm:w-36 bg-slate-50 border-slate-200"
             />
             <Button 
               type="submit"
               size="sm" 
               disabled={loadingAuth}
-              className="px-3 text-xs font-semibold text-white bg-blue-600 h-9 hover:bg-blue-700"
+              className="w-full h-10 px-4 text-xs font-semibold text-white bg-blue-600 sm:h-9 hover:bg-blue-700 sm:w-auto"
             >
               {loadingAuth ? "A entrar..." : "Entrar / Criar"}
             </Button>
