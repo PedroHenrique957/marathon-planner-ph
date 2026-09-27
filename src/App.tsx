@@ -78,18 +78,6 @@ const parseEpisodeData = (rawText: string) => {
   return { title: title || "Episódio", sxe };
 };
 
-// Ícone SVG de Balde de Pipoca
-const PopcornIcon = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 8h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1" />
-    <path d="M5 8H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1" />
-    <path d="M6 8h12l-1.5 13H7.5L6 8z" />
-    <path d="M10 8V5a2 2 0 1 1 4 0v3" />
-    <path d="M7 8V6a2 2 0 1 1 2 2" />
-    <path d="M15 8V6a2 2 0 1 0-2 2" />
-  </svg>
-);
-
 // Componente de Grade com espaçamento adequado entre bordas e textos
 type ScheduleBuilderProps = {
   schedule: WeekSchedule;
