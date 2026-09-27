@@ -10,6 +10,6 @@ export default defineConfig({
     },
   },
   build: {
-    cssMinify: 'esbuild',
+    cssMinify: false, // Desativa o lightningcss para evitar conflitos com funções CSS
   },
 })
