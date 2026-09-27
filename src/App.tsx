@@ -529,8 +529,13 @@ export default function App() {
       {step === 1 && (
         <div className="max-w-xl px-4 mx-auto space-y-8 duration-300 animate-in fade-in">
           <div className="flex flex-col items-center justify-center pt-6 space-y-4 text-center">
-            <div className="p-4 mb-2 text-blue-600 bg-blue-100 rounded-full shadow-inner">
-              <PopcornIcon className="w-12 h-12" />
+            {/* Em vez do <PopcornIcon />, usas a tag <img> a apontar para a pasta public */}
+            <div className="flex items-center justify-center w-20 h-20 p-3 mb-2 bg-blue-100 rounded-full shadow-inner">
+              <img 
+                src="/logo-maratona.png" 
+                alt="Logo Maratona" 
+                className="object-contain w-12 h-12" 
+              />
             </div>
             <h1 className="text-4xl font-black tracking-tight text-slate-900">Maratona de Filmes e Séries</h1>
             <p className="max-w-md text-lg text-slate-500">Olá, como prefere adicionar os conteúdos que deseja assistir?</p>
