@@ -565,45 +565,67 @@ export default function App() {
           const line = lines[i].trim();
           if (!line) continue;
 
-          const lowerLine = line.toLowerCase();
-          if (lowerLine.startsWith("ordem") || lowerLine.startsWith("serie") || lowerLine.startsWith("titulo")) {
+          // Deteta separador (ponto e vírgula ou vírgula)
+          const delimiter = line.includes(";") ? ";" : ",";
+          const cols = line.split(delimiter).map(c => c.replace(/^["']|["']$/g, "").trim());
+          if (cols.length < 2) continue;
+
+          // Ignorar cabeçalho caso exista
+          const firstCol = cols[0].toLowerCase();
+          if (firstCol.includes("serie") || firstCol.includes("titulo") || firstCol.includes("title") || firstCol.includes("ordem")) {
             continue;
           }
 
-          const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^["']\vert{}["']$/g, "").trim());
-          if (cols.length === 0) continue;
-
-          const numbers = cols.map(c => Number(c)).filter(n => !isNaN(n) && n > 0);
-
-          if (numbers.length > 0) {
-            const duration = numbers[numbers.length - 1];
-            const textCols = cols.filter(c => isNaN(Number(c)) && !c.startsWith('http'));
-            const rawText = textCols.join(" ");
-
-            const { title, sxe: parsedSxe } = parseEpisodeData(rawText);
-
-            let finalSxe = parsedSxe;
-            if (!finalSxe && numbers.length >= 3) {
-              const s = numbers[numbers.length - 3];
-              const ep = numbers[numbers.length - 2];
-              if (s < 100 && ep < 1000) {
-                finalSxe = `S${String(s).padStart(2, '0')}E${String(ep).padStart(2, '0')}`;
+          // Verificar se o episódio foi assistido (procura por true/verdadeiro/sim/1 na última coluna ou em qualquer campo)
+          let isWatched = false;
+          const lastVal = cols[cols.length - 1]?.toLowerCase();
+          if (lastVal === "true" || lastVal === "verdadeiro" || lastVal === "sim" || lastVal === "1" || lastVal === "yes") {
+            isWatched = true;
+          } else {
+            for (const col of cols) {
+              const val = col.toLowerCase();
+              if (val === "true" || val === "verdadeiro") {
+                isWatched = true;
+                break;
               }
             }
+          }
 
+          // Se já foi assistido, ignora
+          if (isWatched) continue;
+
+          // Estrutura TMDB Script: [0] Title, [1] Season, [2] Episode, [3] Duration, [4] Date, [5] Watched
+          let title = cols[0] || "Episódio";
+          let season = Number(cols[1]);
+          let episodeNum = Number(cols[2]);
+          let duration = Number(cols[3]);
+
+          let sxe = "";
+          if (!isNaN(season) && !isNaN(episodeNum) && season > 0 && episodeNum > 0) {
+            sxe = `S${String(season).padStart(2, '0')}E${String(episodeNum).padStart(2, '0')}`;
+          } else {
+            const parsed = parseEpisodeData(title);
+            title = parsed.title;
+            sxe = parsed.sxe;
+          }
+
+          const finalDuration = !isNaN(duration) && duration > 0 ? duration : 30;
+
+          if (title) {
             importedEpisodes.push({
               id: Math.random().toString(),
-              title: title || `Episódio ${importedEpisodes.length + 1}`,
-              sxe: finalSxe || undefined,
-              duration: duration > 0 ? duration : 30
+              title: title,
+              sxe: sxe || undefined,
+              duration: finalDuration
             });
           }
         }
 
         if (importedEpisodes.length > 0) {
           setEpisodes(prev => [...prev, ...importedEpisodes]);
+          alert(`${importedEpisodes.length} episódios não assistidos importados com sucesso!`);
         } else {
-          alert("Nenhum episódio válido encontrado no arquivo.");
+          alert("Nenhum episódio não assistido encontrado no arquivo.");
         }
       } catch (err) {
         console.error(err);
@@ -692,11 +714,11 @@ export default function App() {
   const handleExportCSV = () => {
     if (fullChronogram.length === 0) return alert("A agenda está vazia!");
 
-    let csvContent = "\uFEFFOrdem,Serie,Episodio,Duracao(min),Data,Horario,DiaSemana\n";
+    let csvContent = "\uFEFFOrdem,Serie,Episodio,Duracao(min),Data,Horario,DiaSemana,Assistido\n";
     
     fullChronogram.forEach((item, index) => {
       const safeTitle = (item.episodeTitle || "").replace(/,/g, " "); 
-      csvContent += `${index + 1},${safeTitle},${item.sxe || ""},${item.duration},${item.dateStr},${item.timeStr},${item.dayName}\n`;
+      csvContent += `${index + 1},${safeTitle},${item.sxe || ""},${item.duration},${item.dateStr},${item.timeStr},${item.dayName},falso\n`;
     });
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -788,7 +810,7 @@ export default function App() {
               <Button variant="outline" className="w-full h-12 gap-2 text-sm border-2 border-dashed bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="w-4 h-4" /> Escolher arquivo do computador
               </Button>
-              {episodes.length > 0 && <p className="text-xs font-semibold text-center text-green-600">✓ {episodes.length} episódios carregados com sucesso!</p>}
+              {episodes.length > 0 && <p className="text-xs font-semibold text-center text-green-600">✓ {episodes.length} episódios não assistidos carregados com sucesso!</p>}
             </div>
           )}
 
